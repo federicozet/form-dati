@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raccolta Dati Personali</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+    :root {
+      --blu:    #1a2e4a;
+      --oro:    #c8a84b;
+      --grigio: #f2f4f7;
+      --bordo:  #d0d6e0;
+      --testo:  #1e2530;
+      --sub:    #5a6478;
+      --ok:     #1e6f50;
+      --err:    #b03030;
+      --radius: 6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--grigio);
+      color: var(--testo);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 64px;
+    }
+
+    /* ── INTESTAZIONE ── */
+    header {
+      width: 100%;
+      max-width: 560px;
+      border-left: 4px solid var(--oro);
+      padding: 12px 0 12px 18px;
+      margin-bottom: 32px;
+    }
+    header .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--oro);
+      margin-bottom: 6px;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--blu);
+      line-height: 1.25;
+    }
+    header p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.5;
+    }
+
+    /* ── CARD FORM ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      padding: 32px;
+    }
+
+    /* ── SEZIONI ── */
+    .section-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--sub);
+      border-bottom: 1px solid var(--bordo);
+      padding-bottom: 8px;
+      margin: 28px 0 18px;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    /* ── CAMPI ── */
+    .field { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--testo);
+    }
+    label .req { color: var(--oro); margin-left: 2px; }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--bordo);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--testo);
+      background: #fff;
+      transition: border-color .15s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--blu);
+      box-shadow: 0 0 0 3px rgba(26,46,74,.08);
+    }
+    input::placeholder { color: #b0b8c8; }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── NOTA PRIVACY ── */
+    .privacy {
+      background: #f7f9fb;
+      border: 1px solid var(--bordo);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.55;
+      margin: 24px 0 28px;
+    }
+    .privacy strong { color: var(--testo); }
+
+    /* ── PULSANTE ── */
+    button[type="submit"] {
+      width: 100%;
+      padding: 13px;
+      background: var(--blu);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      letter-spacing: .01em;
+    }
+    button[type="submit"]:hover  { background: #243d60; }
+    button[type="submit"]:active { transform: scale(.99); }
+    button[type="submit"]:disabled {
+      background: #8a99b0;
+      cursor: not-allowed;
+    }
+
+    /* ── MESSAGGI ── */
+    .msg {
+      display: none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .msg.ok  { background: #eaf5ef; color: var(--ok);  border: 1px solid #b4dcca; display: block; }
+    .msg.err { background: #fdf0f0; color: var(--err); border: 1px solid #e8bcbc; display: block; }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .row-2 { grid-template-columns: 1fr; }
+      .card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Modulo riservato al personale</div>
+  <h1>Raccolta Dati Personali</h1>
+  <p>Compila tutti i campi obbligatori (<span style="color:var(--oro)">✱</span>) e invia il modulo una sola volta.</p>
+</header>
+
+<div class="card">
+
+  <!-- ── ANAGRAFICA ── -->
+  <div class="section-title">Dati anagrafici</div>
+
+  <div class="row-2">
+    <div class="field">
+      <label>Cognome <span class="req">✱</span></label>
+      <input type="text" id="cognome" placeholder="Rossi" required />
+    </div>
+    <div class="field">
+      <label>Nome <span class="req">✱</span></label>
+      <input type="text" id="nome" placeholder="Mario" required />
+    </div>
+  </div>
+
+  <div class="row-2">
+    <div class="field">
+      <label>Data di nascita <span class="req">✱</span></label>
+      <input type="date" id="dataNascita" required />
+    </div>
+    <div class="field">
+      <label>Luogo di nascita <span class="req">✱</span></label>
+      <input type="text" id="luogoNascita" placeholder="Roma (RM)" required />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Codice Fiscale <span class="req">✱</span></label>
+    <input type="text" id="codiceFiscale" placeholder="RSSMRA80A01H501Z" maxlength="16" style="text-transform:uppercase" required />
+  </div>
+
+  <!-- ── RESIDENZA ── -->
+  <div class="section-title">Residenza e domicilio</div>
+
+  <div class="field">
+    <label>Comune di residenza <span class="req">✱</span></label>
+    <input type="text" id="residenzaComune" placeholder="Roma (RM)" required />
+  </div>
+
+  <div class="field">
+    <label>Via / Piazza <span class="req">✱</span></label>
+    <input type="text" id="residenzaVia" placeholder="Via Roma 1" required />
+  </div>
+
+  <div class="field">
+    <label>Domicilio <span style="font-size:11px;color:var(--sub);font-weight:400">(solo se diverso dalla residenza)</span></label>
+    <input type="text" id="domicilio" placeholder="Via Milano 5, Torino (TO)" />
+  </div>
+
+  <!-- ── CONTATTI ── -->
+  <div class="section-title">Contatti</div>
+
+  <div class="field">
+    <label>Numero di telefono <span class="req">✱</span></label>
+    <input type="tel" id="telefono" placeholder="+39 333 123 4567" required />
+  </div>
+
+  <div class="field">
+    <label>Indirizzo e-mail <span class="req">✱</span></label>
+    <input type="email" id="email" placeholder="mario.rossi@esempio.it" required />
+  </div>
+
+  <!-- ── CMD ── -->
+  <div class="section-title">CMD</div>
+
+  <div class="row-2">
+    <div class="field">
+      <label>Numero CMD <span class="req">✱</span></label>
+      <input type="text" id="numCMD" placeholder="CMD-00000" required />
+    </div>
+    <div class="field">
+      <label>Scadenza CMD <span class="req">✱</span></label>
+      <input type="date" id="scadenzaCMD" required />
+    </div>
+  </div>
+
+  <!-- ── PRIVACY ── -->
+  <div class="privacy">
+    <strong>Informativa privacy (art. 13 GDPR).</strong> I dati inseriti sono raccolti ai soli fini amministrativi interni e saranno trattati esclusivamente dal personale autorizzato. Non verranno ceduti a terzi né utilizzati per finalità diverse da quelle indicate.
+  </div>
+
+  <button type="submit" id="btnInvia" onclick="invia()">
+    <span id="btnLabel">Invia dati</span>
+    <div class="spinner" id="spinner"></div>
+  </button>
+
+  <div class="msg" id="msgOk">✔ Dati inviati correttamente. Puoi chiudere questa pagina.</div>
+  <div class="msg" id="msgErr">✖ Errore durante l'invio. Riprova tra qualche secondo o contatta l'amministratore.</div>
+
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  //  INSERISCI QUI L'URL DEL TUO APPS SCRIPT
+  // ─────────────────────────────────────────────
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXqeijflPB83-mnPQY8zIci2TdtmXqUCkbYEGrrnHZEtpuljAoUrHqDIq8tbCjca0/exec";
+  // ─────────────────────────────────────────────
+
+  function leggi(id) {
+    return document.getElementById(id).value.trim();
+  }
+
+  function valida() {
+    const campi = ["cognome","nome","dataNascita","luogoNascita","codiceFiscale","residenzaComune","residenzaVia","telefono","email","numCMD","scadenzaCMD"];
+    for (const id of campi) {
+      const val = leggi(id);
+      if (!val) {
+        document.getElementById(id).focus();
+        return false;
+      }
+    }
+    const email = leggi("email");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("Inserisci un indirizzo e-mail valido.");
+      document.getElementById("email").focus();
+      return false;
+    }
+    return true;
+  }
+
+  async function invia() {
+    if (!valida()) return;
+
+    const btn     = document.getElementById("btnInvia");
+    const label   = document.getElementById("btnLabel");
+    const spinner = document.getElementById("spinner");
+    const msgOk   = document.getElementById("msgOk");
+    const msgErr  = document.getElementById("msgErr");
+
+    btn.disabled   = true;
+    label.style.display  = "none";
+    spinner.style.display = "block";
+    msgOk.style.display = msgErr.style.display = "none";
+
+    const payload = {
+      cognome:          leggi("cognome"),
+      nome:             leggi("nome"),
+      dataNascita:      leggi("dataNascita"),
+      luogoNascita:     leggi("luogoNascita"),
+      codiceFiscale:    leggi("codiceFiscale").toUpperCase(),
+      residenzaComune:  leggi("residenzaComune"),
+      residenzaVia:     leggi("residenzaVia"),
+      domicilio:        leggi("domicilio"),
+      telefono:         leggi("telefono"),
+      email:            leggi("email"),
+      numCMD:           leggi("numCMD"),
+      scadenzaCMD:      leggi("scadenzaCMD"),
+      timestamp:        new Date().toLocaleString("it-IT")
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      // no-cors non restituisce stato → assumiamo successo se non lancia errore
+      msgOk.style.display = "block";
+      btn.style.display = "none";
+    } catch (e) {
+      msgErr.style.display = "block";
+      btn.disabled = false;
+      label.style.display = "block";
+      spinner.style.display = "none";
+    }
+  }
+</script>
+
+</body>
+</html>
